@@ -192,7 +192,7 @@
   }
 
   .scroll-spacer {
-    height: 65vh;
+    height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
@@ -201,7 +201,6 @@
   }
   .next-content {
     max-width: 560px;
-    padding-top: 120px;
     text-align: left;
     opacity: 0;
     will-change: opacity, transform, filter;
@@ -236,7 +235,7 @@
   }
 
   .scroll-spacer-2 {
-    height: 65vh;
+    height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
@@ -245,7 +244,6 @@
   }
   .stage3-content {
     max-width: 560px;
-    padding-top: 120px;
     text-align: right;
     opacity: 0;
     will-change: opacity, transform, filter;
@@ -419,11 +417,11 @@
       function applyFade() {
         if (hero) materialize(hero, sectionProgress(hero, 0.38, true, heroFadeRange()));
 
-        var stage2Progress = stage2 ? sectionProgress(stage2, 0.22) : 0;
+        var stage2Progress = stage2 ? sectionProgress(stage2, 0.5) : 0;
         materialize(stage2, stage2Progress);
         materialize(stage2Media, stage2Progress);
 
-        var stage3Progress = stage3 ? sectionProgress(stage3, 0.22) : 0;
+        var stage3Progress = stage3 ? sectionProgress(stage3, 0.5) : 0;
         materialize(stage3, stage3Progress);
         materialize(stage3Media, stage3Progress);
 
@@ -454,8 +452,8 @@
         function currentClarity() {
           var vals = [];
           if (hero)   vals.push(sectionProgress(hero, 0.38, true, heroFadeRange()));
-          if (stage2) vals.push(sectionProgress(stage2, 0.22));
-          if (stage3) vals.push(sectionProgress(stage3, 0.22));
+          if (stage2) vals.push(sectionProgress(stage2, 0.5));
+          if (stage3) vals.push(sectionProgress(stage3, 0.5));
           return vals.length ? Math.max.apply(null, vals) : 0;
         }
 
@@ -467,7 +465,7 @@
         function snapTargets() {
           var targets = [0];
           var docMax = document.documentElement.scrollHeight - window.innerHeight;
-          [[stage2, 0.22], [stage3, 0.22]].forEach(function(pair) {
+          [[stage2, 0.5], [stage3, 0.5]].forEach(function(pair) {
             var el = pair[0];
             if (!el) return;
             var rect = el.getBoundingClientRect();
