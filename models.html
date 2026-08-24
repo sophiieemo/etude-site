@@ -166,7 +166,10 @@
   }
   .carousel-wrap {
     position: relative;
-    margin-left: 62px;
+    /* Same width as before (100vw - 122px), but split evenly left/right
+       so the row is centered rather than sitting flush to the right edge. */
+    margin-left: 31px;
+    margin-right: 31px;
   }
   .scroll-arrow {
     position: absolute;
