@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: linear-gradient(to right, rgba(44, 141, 196, 0.6), rgba(66, 88, 214, 0.6)), #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+  }
+  .topbar {
+    height: 70px;
+    width: 100%;
+    background: linear-gradient(to right, rgba(44, 141, 196, 0.65), rgba(66, 88, 214, 0.65));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+  }
+  .nav-group-left {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+  .logo-spot {
+    width: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .logo-text {
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    position: relative;
+  }
+  .nav-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: #ffffff;
+    border-radius: 2px;
+    pointer-events: none;
+    transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .nav-link {
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    padding: 10px 0;
+  }
+  .nav-link:hover {
+    color: #ffffff;
+  }
+  .nav-link.active {
+    color: #ffffff;
+    font-weight: 500;
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+  }
+  .download-link {
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c8dc4;
+    background: #ffffff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+  }
+  .download-link:hover {
+    background: #eaf4fa;
+  }
+
+  .hero {
+    height: 65vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 260px 24px 40px;
+  }
+  .hero-content {
+    max-width: 1250px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: headline-in 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s both;
+  }
+  @keyframes headline-in {
+    0%   { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-content {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .headline {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+    font-size: 60px;
+    font-weight: 500;
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+    color: #fbf7ee;
+    text-align: center;
+    margin: 0;
+  }
+  .hl {
+    position: relative;
+    display: inline-block;
+  }
+  .hl svg {
+    position: absolute;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .hl-underline svg {
+    left: 0;
+    bottom: -12px;
+    width: 100%;
+    height: 20px;
+  }
+  .hl-zigzag svg {
+    left: 0;
+    bottom: -10px;
+    width: 100%;
+    height: 14px;
+  }
+  .hl-circle svg {
+    left: -16px;
+    top: -14px;
+    width: calc(100% + 32px);
+    height: calc(100% + 26px);
+  }
+  .hl path {
+    stroke: #ffffff;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.7;
+  }
+
+  .cta-button {
+    display: inline-block;
+    margin-top: 44px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c6fa8;
+    background: #ffffff;
+    text-decoration: none;
+    padding: 14px 36px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  .cta-button:hover {
+    background: #eaf4fa;
+  }
+  .cta-subtitle {
+    margin-top: 12px;
+    font-size: 17px;
+    font-weight: 400;
+    color: #ffffff;
+  }
+
+  .scroll-spacer {
+    height: 65vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 60px;
+  }
+  .next-content {
+    max-width: 560px;
+    padding-top: 120px;
+    text-align: left;
+    opacity: 0;
+    will-change: opacity, transform, filter;
+  }
+  .next-headline {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: #fbf7ee;
+    margin: 0;
+  }
+  .next-subtitle {
+    font-size: 22px;
+    font-weight: 400;
+    color: #ffffff;
+    margin: 14px 0 0 0;
+  }
+  .media-collage {
+    position: relative;
+    width: 360px;
+    height: 340px;
+    flex-shrink: 0;
+    opacity: 0;
+    will-change: opacity, transform, filter;
+  }
+  .media-card {
+    position: absolute;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .scroll-spacer-2 {
+    height: 65vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 60px;
+  }
+  .stage3-content {
+    max-width: 560px;
+    padding-top: 120px;
+    text-align: right;
+    opacity: 0;
+    will-change: opacity, transform, filter;
+  }
+  .stage3-headline {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: #fbf7ee;
+    margin: 0;
+  }
+  .stage3-subtitle {
+    font-size: 22px;
+    font-weight: 400;
+    color: #ffffff;
+    margin: 14px 0 0 0;
+  }
+  .end-spacer {
+    height: 50vh;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="nav-group-left">
+      <div class="logo-spot"><a href="index.html" class="logo-text">Magpie</a></div>
+      <div class="nav-left">
+        <a href="resources.html" class="nav-link ">Resources</a>
+        <a href="models.html" class="nav-link ">Models</a>
+        <a href="community.html" class="nav-link ">Community</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <a href="download.html" class="download-link ">Download</a>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var navLeft = document.querySelector('.nav-left');
+      if (!navLeft) return;
+      var links = navLeft.querySelectorAll('.nav-link');
+      var indicator = document.createElement('div');
+      indicator.className = 'nav-indicator';
+      navLeft.appendChild(indicator);
+
+      function moveIndicatorTo(el) {
+        if (!el) {
+          indicator.style.width = '0';
+          return;
+        }
+        indicator.style.left = el.offsetLeft + 'px';
+        indicator.style.width = el.offsetWidth + 'px';
+      }
+
+      var activeLink = navLeft.querySelector('.nav-link.active');
+      moveIndicatorTo(activeLink);
+
+      links.forEach(function(link) {
+        link.addEventListener('mouseenter', function() {
+          moveIndicatorTo(link);
+        });
+      });
+      navLeft.addEventListener('mouseleave', function() {
+        moveIndicatorTo(activeLink);
+      });
+      window.addEventListener('resize', function() {
+        moveIndicatorTo(activeLink);
+      });
+    })();
+  </script>
+  <div class="hero">
+    <div class="hero-content">
+      <h1 class="headline"><span class="hl hl-underline">Magpie<svg viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M2,10 C 24,3 42,15 62,7 C 84,-1 102,13 124,6 C 146,-1 164,12 186,5 C 192,3 196,6 198,5" stroke-width="3"></path><path d="M4,16 C 26,10 44,19 64,13 C 86,6 104,17 126,11 C 148,4 166,15 188,10 C 193,8 196,10 198,9" stroke-width="2.5"></path></svg></span>: best way to build with <span class="hl hl-zigzag">open models<svg viewBox="0 0 260 16" preserveAspectRatio="none"><path d="M2,12 L22,3 L42,12 L62,3 L82,12 L102,3 L122,12 L142,3 L162,12 L182,3 L202,12 L222,3 L242,12 L258,6" stroke-width="3"></path></svg></span> on your <span class="hl hl-circle">local computer<svg viewBox="0 0 260 90" preserveAspectRatio="none"><path d="M128,4 C 190,1 244,20 250,45 C 256,71 196,88 130,86 C 62,84 6,68 6,44 C 6,19 58,4 128,4 Z" stroke-width="3"></path></svg></span>.</h1>
+      <a href="download.html" class="cta-button">Download Now</a>
+      <p class="cta-subtitle">Free to use</p>
+    </div>
+  </div>
+
+  <div class="scroll-spacer">
+    <div class="next-content">
+      <h1 class="next-headline">Speed and power...</h1>
+      <p class="next-subtitle">benchmark info</p>
+    </div>
+    <div class="media-collage" id="stage2Media">
+      <div class="media-card" style="width:190px; height:240px; left:0; top:60px; transform:rotate(-6deg); background:linear-gradient(160deg, #4258d6, #2c8dc4);"></div>
+      <div class="media-card" style="width:190px; height:240px; left:110px; top:20px; transform:rotate(4deg); background:linear-gradient(160deg, #7896f0, #4258d6);"></div>
+      <div class="media-card" style="width:160px; height:200px; left:200px; top:110px; transform:rotate(-3deg); background:linear-gradient(160deg, #2c8dc4, #1a5f85);"></div>
+    </div>
+  </div>
+
+  <div class="scroll-spacer-2">
+    <div class="media-collage" id="stage3Media">
+      <div class="media-card" style="width:190px; height:240px; left:0; top:20px; transform:rotate(5deg); background:linear-gradient(160deg, #2c8dc4, #4258d6);"></div>
+      <div class="media-card" style="width:190px; height:240px; left:110px; top:70px; transform:rotate(-4deg); background:linear-gradient(160deg, #4258d6, #7896f0);"></div>
+      <div class="media-card" style="width:160px; height:200px; left:200px; top:10px; transform:rotate(3deg); background:linear-gradient(160deg, #1a5f85, #2c8dc4);"></div>
+    </div>
+    <div class="stage3-content">
+      <h1 class="stage3-headline">...all natively local to you</h1>
+      <p class="stage3-subtitle">&rarr; Privacy Policy</p>
+    </div>
+  </div>
+  <div class="end-spacer"></div>
+
+  <script>
+    (function() {
+      if (window.history && 'scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+
+      var hero = document.querySelector('.hero-content');
+      var stage2 = document.querySelector('.next-content');
+      var stage2Media = document.getElementById('stage2Media');
+      var stage3 = document.querySelector('.stage3-content');
+      var stage3Media = document.getElementById('stage3Media');
+      var FADE_RANGE = 230; // px of scroll over which a section fades in/out
+      // The hero fades out over a longer distance so it overlaps more with
+      // "Speed and power..." fading in, softening that first handoff without
+      // fully blending the two sections together. Scaled to viewport height so
+      // the overlap stays consistent on taller screens (where sections sit
+      // further apart).
+      function heroFadeRange() {
+        return window.innerHeight * 0.5;
+      }
+      var ticking = false;
+
+      // The hero's entrance animation uses fill-mode "both", which holds its
+      // final keyframe value and overrides inline styles set by JS forever
+      // (CSS animations win the cascade over normal inline styles). Once the
+      // entrance animation finishes, drop it so scroll-driven opacity works.
+      if (hero) {
+        hero.addEventListener('animationend', function() {
+          hero.style.animation = 'none';
+        });
+      }
+
+      var PLATEAU = 105; // px around the anchor where content stays fully solid (no blur)
+
+      function sectionProgress(el, anchorFraction, fadeOutOnly, fadeRange) {
+        var rect = el.getBoundingClientRect();
+        var center = rect.top + rect.height / 2;
+        var viewportAnchor = window.innerHeight * (anchorFraction === undefined ? 0.5 : anchorFraction);
+        var range = fadeRange || FADE_RANGE;
+        // fadeOutOnly: element is fully clear until it has scrolled UP past its
+        // anchor, so it never starts blurred on page load (used for the hero).
+        if (fadeOutOnly && center >= viewportAnchor) return 1;
+        var offset = Math.abs(center - viewportAnchor);
+        if (offset <= PLATEAU) return 1;
+        return Math.max(0, 1 - (offset - PLATEAU) / range);
+      }
+
+      // Apply a soft "materialize" treatment (fade + gentle scale-up + lift +
+      // unblur) instead of a flat opacity snap, so content dissolves into
+      // place the way it does on the Apple reference. Text and its paired
+      // image collage are passed the exact same progress value so they move
+      // as a single unit rather than fading independently.
+      function materialize(el, progress) {
+        if (!el) return;
+        var p = Math.max(0, Math.min(1, progress));
+        el.style.opacity = String(p);
+        var scale = 0.94 + 0.06 * p;
+        var lift = (1 - p) * 16;
+        el.style.transform = 'translateY(' + lift + 'px) scale(' + scale + ')';
+        el.style.filter = 'blur(' + (8 * (1 - p)) + 'px)';
+      }
+
+      function applyFade() {
+        if (hero) materialize(hero, sectionProgress(hero, 0.38, true, heroFadeRange()));
+
+        var stage2Progress = stage2 ? sectionProgress(stage2, 0.22) : 0;
+        materialize(stage2, stage2Progress);
+        materialize(stage2Media, stage2Progress);
+
+        var stage3Progress = stage3 ? sectionProgress(stage3, 0.22) : 0;
+        materialize(stage3, stage3Progress);
+        materialize(stage3Media, stage3Progress);
+
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          window.requestAnimationFrame(applyFade);
+          ticking = true;
+        }
+      }, { passive: true });
+      window.addEventListener('resize', applyFade);
+
+      applyFade();
+
+      // --- Scroll resistance -------------------------------------------------
+      // Make it easier to land on the "sweet spot" where a section is fully
+      // sharp: scrolling is damped while content is clear, and runs at normal
+      // speed while it's blurred between sections.
+      var reduceMotion = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!reduceMotion) {
+        var MIN_SPEED = 0.32; // multiplier when content is fully sharp
+        var MAX_SPEED = 1;    // multiplier when fully blurred
+
+        function currentClarity() {
+          var vals = [];
+          if (hero)   vals.push(sectionProgress(hero, 0.38, true, heroFadeRange()));
+          if (stage2) vals.push(sectionProgress(stage2, 0.22));
+          if (stage3) vals.push(sectionProgress(stage3, 0.22));
+          return vals.length ? Math.max.apply(null, vals) : 0;
+        }
+
+        window.addEventListener('wheel', function(e) {
+          if (e.ctrlKey) return; // let pinch-zoom through untouched
+          var clarity = currentClarity();
+          var speed = MAX_SPEED - (MAX_SPEED - MIN_SPEED) * clarity;
+          // Only intervene when there's meaningful damping to apply, so normal
+          // scrolling stays completely native everywhere else.
+          if (speed > 0.95) return;
+          e.preventDefault();
+          window.scrollBy(0, e.deltaY * speed);
+        }, { passive: false });
+      }
+    })();
+  </script>
+</body>
+</html>
