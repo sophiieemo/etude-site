@@ -6,7 +6,8 @@
 <title>Download</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; }
@@ -34,14 +35,18 @@
     height: 100%;
     display: flex;
     align-items: center;
-    overflow: hidden;
+  }
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
   }
   .logo-text {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ffffff;
+    font-family: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 24px;
+    font-weight: 600;
     letter-spacing: -0.01em;
-    text-decoration: none;
+    color: #ffffff;
   }
   .nav-left {
     display: flex;
@@ -61,7 +66,7 @@
     transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .nav-link {
-    font-size: 18px;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;    font-size: 18px;
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
     padding: 10px 0;
@@ -78,7 +83,7 @@
     align-items: center;
   }
   .download-link {
-    font-size: 18px;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;    font-size: 18px;
     color: #2c8dc4;
     background: #ffffff;
     text-decoration: none;
@@ -93,7 +98,7 @@
 <body>
   <div class="topbar">
     <div class="nav-group-left">
-      <div class="logo-spot"><a href="index.html" class="logo-text">Magpie</a></div>
+      <div class="logo-spot"><a href="index.html" class="logo-link"><span class="logo-text">Étude</span></a></div>
       <div class="nav-left">
       <a href="resources.html" class="nav-link ">Resources</a>
       <a href="models.html" class="nav-link ">Models</a>

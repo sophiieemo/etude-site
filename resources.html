@@ -6,13 +6,14 @@
 <title>Resources</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; scroll-behavior: smooth; }
   body {
     background: #ffffff;
-    font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
   }
   .topbar {
     height: 70px;
@@ -34,15 +35,18 @@
     height: 100%;
     display: flex;
     align-items: center;
-    overflow: hidden;
+  }
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
   }
   .logo-text {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 18px;
+    font-family: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 24px;
     font-weight: 600;
-    color: #ffffff;
     letter-spacing: -0.01em;
-    text-decoration: none;
+    color: #ffffff;
   }
   .nav-left {
     display: flex;
@@ -62,7 +66,7 @@
     transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .nav-link {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 15px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
@@ -81,7 +85,7 @@
     align-items: center;
   }
   .download-link {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: #2c8dc4;
@@ -105,6 +109,44 @@
     border-right: 1px solid #ececec;
     padding: 28px 0;
     overflow-y: auto;
+  }
+  .sidebar-search {
+    position: relative;
+    margin: 0 20px 22px;
+  }
+  .sidebar-search svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: #bcbcbc;
+    pointer-events: none;
+  }
+  .sidebar-search input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    color: #1a1a1a;
+    padding: 9px 12px 9px 34px;
+    border: 1px solid #ededed;
+    border-radius: 8px;
+    outline: none;
+    background: #fcfcfc;
+  }
+  .sidebar-search input:focus {
+    border-color: #2161e6;
+    background: #ffffff;
+  }
+  .sidebar-search input::placeholder {
+    color: #bcbcbc;
+  }
+  .sidebar-no-results {
+    display: none;
+    padding: 4px 28px;
+    font-size: 13px;
+    color: #999999;
   }
   .sidebar-section {
     margin-bottom: 18px;
@@ -177,7 +219,7 @@
 
   .dot-scroller {
     position: fixed;
-    top: 70px;
+    top: 145px;
     left: 204px;
     bottom: 0;
     width: 46px;
@@ -227,7 +269,7 @@
 <body>
   <div class="topbar">
     <div class="nav-group-left">
-      <div class="logo-spot"><a href="index.html" class="logo-text">Magpie</a></div>
+      <div class="logo-spot"><a href="index.html" class="logo-link"><span class="logo-text">Étude</span></a></div>
       <div class="nav-left">
       <a href="resources.html" class="nav-link active">Resources</a>
       <a href="models.html" class="nav-link ">Models</a>
@@ -275,6 +317,11 @@
   </script>
   <div class="page-body">
     <div class="sidebar">
+      <div class="sidebar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input type="text" id="sidebarSearch" placeholder="Search..." autocomplete="off">
+      </div>
+      <div class="sidebar-no-results" id="sidebarNoResults">No matches</div>
       <div class="sidebar-section">
         <div class="sidebar-section-title"><a href="#section-1" class="sidebar-section-link">Section 1</a></div>
         <a href="#subsection-1-1" class="sidebar-subitem">Subsection 1</a>
@@ -372,6 +419,43 @@
 
   <script>
     (function() {
+      var input = document.getElementById('sidebarSearch');
+      var noResults = document.getElementById('sidebarNoResults');
+      if (!input) return;
+      var sections = Array.prototype.slice.call(document.querySelectorAll('.sidebar-section'));
+
+      input.addEventListener('input', function() {
+        var q = input.value.trim().toLowerCase();
+        var anyVisible = false;
+
+        sections.forEach(function(section) {
+          var titleEl = section.querySelector('.sidebar-section-title');
+          var items = Array.prototype.slice.call(section.querySelectorAll('.sidebar-subitem'));
+          var titleText = titleEl ? titleEl.textContent.toLowerCase() : '';
+          var titleMatch = q === '' || titleText.indexOf(q) !== -1;
+
+          var itemMatched = false;
+          items.forEach(function(item) {
+            // If the section title itself matches, keep all of its subitems.
+            var match = q === '' || titleMatch || item.textContent.toLowerCase().indexOf(q) !== -1;
+            item.style.display = match ? '' : 'none';
+            if (match) itemMatched = true;
+          });
+
+          var showSection = q === '' || titleMatch || itemMatched;
+          section.style.display = showSection ? '' : 'none';
+          if (showSection) anyVisible = true;
+        });
+
+        if (noResults) {
+          noResults.style.display = anyVisible ? 'none' : 'block';
+        }
+      });
+    })();
+  </script>
+
+  <script>
+    (function() {
       var content = document.querySelector('.content-area');
       var glow = document.getElementById('scrollGlow');
       var track = document.querySelector('.dot-scroller');
@@ -380,7 +464,7 @@
       function updateGlow() {
         var maxScroll = content.scrollHeight - content.clientHeight;
         var progress = maxScroll > 0 ? content.scrollTop / maxScroll : 0;
-        var minTop = 48; // aligns with content-area's top padding, where "Section 1" starts
+        var minTop = 12; // rests level with "Section 1", measured from the track's top
         var maxTop = track.clientHeight - glow.offsetHeight;
         glow.style.top = (minTop + progress * (maxTop - minTop)) + 'px';
       }
