@@ -207,14 +207,6 @@
     text-align: center;
     margin: 0;
   }
-  /* "Étude" grows the first time it's hovered and stays that size */
-  .hl-grow {
-    font-size: 1em;
-    transition: font-size 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-  .hl-grow.grown {
-    font-size: 1.10em;
-  }
   .hl {
     position: relative;
     display: inline-block;
@@ -477,7 +469,7 @@
   </script>
   <div class="hero">
     <div class="hero-content">
-      <h1 class="headline"><span class="hl hl-underline hl-grow" id="etudeWord">Étude<svg viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M2,10 C 24,3 42,15 62,7 C 84,-1 102,13 124,6 C 146,-1 164,12 186,5 C 192,3 196,6 198,5" stroke-width="3"></path><path d="M4,16 C 26,10 44,19 64,13 C 86,6 104,17 126,11 C 148,4 166,15 188,10 C 193,8 196,10 198,9" stroke-width="2.5"></path></svg></span>: <a href="resources.html" class="hl hl-circle hl-link"><span class="hl-text">fastest engine</span><svg viewBox="0 0 260 90" preserveAspectRatio="none"><path d="M128,4 C 190,1 244,20 250,45 C 256,71 196,88 130,86 C 62,84 6,68 6,44 C 6,19 58,4 128,4 Z" stroke-width="3"></path></svg></a> for building with <a href="models.html" class="hl hl-wave hl-link"><span class="hl-text">open models</span><svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,10.5 C 13,5 22,13.5 34,9.5 C 46,5.5 55,13 68,9 C 80,5 90,13.8 103,10 C 115,6.2 124,13 137,9.2 C 150,5.4 159,13.2 172,9.6 C 184,6.2 194,12.8 207,9.2 C 218,6.1 227,12 239,8.8 C 247,6.6 252,9.6 257,7.8" stroke-width="2.6"></path></svg></a> on your local computer.</h1>
+      <h1 class="headline"><span class="hl hl-underline">Étude<svg viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M2,10 C 24,3 42,15 62,7 C 84,-1 102,13 124,6 C 146,-1 164,12 186,5 C 192,3 196,6 198,5" stroke-width="3"></path><path d="M4,16 C 26,10 44,19 64,13 C 86,6 104,17 126,11 C 148,4 166,15 188,10 C 193,8 196,10 198,9" stroke-width="2.5"></path></svg></span>: <a href="resources.html" class="hl hl-circle hl-link"><span class="hl-text">fastest engine</span><svg viewBox="0 0 260 90" preserveAspectRatio="none"><path d="M128,4 C 190,1 244,20 250,45 C 256,71 196,88 130,86 C 62,84 6,68 6,44 C 6,19 58,4 128,4 Z" stroke-width="3"></path></svg></a> for building with <a href="models.html" class="hl hl-wave hl-link"><span class="hl-text">open models</span><svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,10.5 C 13,5 22,13.5 34,9.5 C 46,5.5 55,13 68,9 C 80,5 90,13.8 103,10 C 115,6.2 124,13 137,9.2 C 150,5.4 159,13.2 172,9.6 C 184,6.2 194,12.8 207,9.2 C 218,6.1 227,12 239,8.8 C 247,6.6 252,9.6 257,7.8" stroke-width="2.6"></path></svg></a> on your local computer.</h1>
       <a href="download.html" class="cta-button">Download Now</a>
       <p class="cta-subtitle">Free to use</p>
     </div>
@@ -539,20 +531,6 @@
       }, { threshold: 0.25 });
 
       targets.forEach(function(el) { io.observe(el); });
-    })();
-  </script>
-
-  <script>
-    (function() {
-      var word = document.getElementById('etudeWord');
-      if (!word) return;
-      function grow() {
-        word.classList.add('grown');
-        word.removeEventListener('mouseenter', grow);
-        word.removeEventListener('touchstart', grow);
-      }
-      word.addEventListener('mouseenter', grow);
-      word.addEventListener('touchstart', grow, { passive: true });
     })();
   </script>
 </body>
