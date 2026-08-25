@@ -67,7 +67,7 @@
     transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .nav-link {
-    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;    font-size: 15px;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;    font-size: 17px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
@@ -92,9 +92,17 @@
     text-decoration: none;
     padding: 6px 14px;
     border-radius: 8px;
+    display: inline-block;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.16s ease, box-shadow 0.16s ease;
   }
   .download-link:hover {
     background: #eaf4fa;
+    transform: translateY(-1px);
+  }
+  /* small lift on press, for a bit of flare */
+  .download-link:active {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(20, 60, 140, 0.22);
   }
 
   .models-page {

@@ -67,7 +67,7 @@
   }
   .nav-link {
     font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
@@ -93,9 +93,17 @@
     text-decoration: none;
     padding: 6px 14px;
     border-radius: 8px;
+    display: inline-block;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.16s ease, box-shadow 0.16s ease;
   }
   .download-link:hover {
     background: #eaf4fa;
+    transform: translateY(-1px);
+  }
+  /* small lift on press, for a bit of flare */
+  .download-link:active {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(20, 60, 140, 0.22);
   }
 
   .hero {
@@ -126,13 +134,21 @@
   }
   .headline {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
-    font-size: 60px;
+    font-size: 72px;
     font-weight: 500;
-    line-height: 1.28;
+    line-height: 1.55;
     letter-spacing: -0.01em;
     color: #fbf7ee;
     text-align: center;
     margin: 0;
+  }
+  /* "Étude" grows the first time it's hovered and stays that size */
+  .hl-grow {
+    font-size: 1em;
+    transition: font-size 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .hl-grow.grown {
+    font-size: 1.10em;
   }
   .hl {
     position: relative;
@@ -149,17 +165,34 @@
     width: 100%;
     height: 20px;
   }
-  .hl-zigzag svg {
+  .hl-wave svg {
     left: 0;
-    bottom: -10px;
+    bottom: -12px;
     width: 100%;
-    height: 14px;
+    height: 18px;
   }
   .hl-circle svg {
     left: -16px;
     top: -14px;
     width: calc(100% + 32px);
     height: calc(100% + 26px);
+  }
+  /* font-style can't be animated (it's a discrete property), so the slant
+     is done with a skew transform, which eases smoothly. Only the text is
+     skewed — the SVG annotation stays upright. */
+  .hl-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .hl-text {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .hl-wave:hover .hl-text,
+  .hl-circle:hover .hl-text {
+    transform: skewX(-6deg);
   }
   .hl path {
     stroke: #ffffff;
@@ -172,13 +205,13 @@
   .cta-button {
     display: inline-block;
     margin-top: 44px;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 600;
     color: #2c6fa8;
     background: #ffffff;
     text-decoration: none;
-    padding: 14px 36px;
-    border-radius: 10px;
+    padding: 18px 46px;
+    border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
   .cta-button:hover {
@@ -197,28 +230,37 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    /* Centered band: the row is capped and centered so the text and image
+       sit closer to the middle instead of hugging the screen edges, while
+       staying left/right aligned within the band. */
+    max-width: 1520px;
+    margin: 0 auto;
     padding: 0 60px;
   }
   .next-content {
-    max-width: 560px;
+    max-width: 660px;
     text-align: left;
     opacity: 0;
     will-change: opacity, transform, filter;
   }
   .next-headline {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
-    font-size: 44px;
+    font-size: 56px;
     font-weight: 500;
     line-height: 1.25;
     letter-spacing: -0.01em;
     color: #fbf7ee;
     margin: 0;
   }
+  .next-subtitle strong {
+    font-weight: 600;
+  }
   .next-subtitle {
-    font-size: 22px;
+    font-size: 27px;
     font-weight: 400;
+    line-height: 1.6;
     color: #ffffff;
-    margin: 14px 0 0 0;
+    margin: 18px 0 0 0;
   }
   .media-collage {
     position: relative;
@@ -240,17 +282,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    /* Centered band: the row is capped and centered so the text and image
+       sit closer to the middle instead of hugging the screen edges, while
+       staying left/right aligned within the band. */
+    max-width: 1520px;
+    margin: 0 auto;
     padding: 0 60px;
   }
   .stage3-content {
-    max-width: 560px;
+    max-width: 660px;
     text-align: right;
     opacity: 0;
     will-change: opacity, transform, filter;
   }
   .stage3-headline {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
-    font-size: 44px;
+    font-size: 56px;
     font-weight: 500;
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -258,14 +305,54 @@
     margin: 0;
   }
   .stage3-subtitle {
-    font-size: 22px;
+    font-size: 27px;
     font-weight: 400;
+    line-height: 1.6;
     color: #ffffff;
-    margin: 14px 0 0 0;
+    margin: 18px 0 0 0;
+  }
+  /* Kept as plain inline text so the letters stay on the sentence's baseline
+     (inline-block + overflow:hidden shifts the baseline down). The glimmer is
+     a gradient swept across the element's background instead of a clipped
+     overlay, so no layout mode change is needed. */
+  .stage3-subtitle a,
+  .next-subtitle a {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: rgba(255, 255, 255, 0.55);
+    background-image: linear-gradient(105deg,
+      rgba(255, 255, 255, 0) 38%,
+      rgba(255, 255, 255, 0.55) 50%,
+      rgba(255, 255, 255, 0) 62%);
+    background-repeat: no-repeat;
+    background-size: 220% 100%;
+    background-position: -140% 0;
+    transition: background-position 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+                text-decoration-color 0.18s ease;
+  }
+  .stage3-subtitle a:hover,
+  .next-subtitle a:hover {
+    text-decoration-color: #ffffff;
+    background-position: 240% 0;
   }
   .end-spacer {
     height: 50vh;
     width: 100%;
+  }
+  .reveal {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(18px) scale(0.97);
+  }
+  .reveal.is-visible,
+  .is-visible {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+    transition: opacity 0.85s ease, filter 0.85s ease,
+                transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 </style>
 </head>
@@ -320,7 +407,7 @@
   </script>
   <div class="hero">
     <div class="hero-content">
-      <h1 class="headline"><span class="hl hl-underline">Étude<svg viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M2,10 C 24,3 42,15 62,7 C 84,-1 102,13 124,6 C 146,-1 164,12 186,5 C 192,3 196,6 198,5" stroke-width="3"></path><path d="M4,16 C 26,10 44,19 64,13 C 86,6 104,17 126,11 C 148,4 166,15 188,10 C 193,8 196,10 198,9" stroke-width="2.5"></path></svg></span>: best way to build with <span class="hl hl-zigzag">open models<svg viewBox="0 0 260 16" preserveAspectRatio="none"><path d="M2,12 L22,3 L42,12 L62,3 L82,12 L102,3 L122,12 L142,3 L162,12 L182,3 L202,12 L222,3 L242,12 L258,6" stroke-width="3"></path></svg></span> on your <span class="hl hl-circle">local computer<svg viewBox="0 0 260 90" preserveAspectRatio="none"><path d="M128,4 C 190,1 244,20 250,45 C 256,71 196,88 130,86 C 62,84 6,68 6,44 C 6,19 58,4 128,4 Z" stroke-width="3"></path></svg></span>.</h1>
+      <h1 class="headline"><span class="hl hl-underline hl-grow" id="etudeWord">Étude<svg viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M2,10 C 24,3 42,15 62,7 C 84,-1 102,13 124,6 C 146,-1 164,12 186,5 C 192,3 196,6 198,5" stroke-width="3"></path><path d="M4,16 C 26,10 44,19 64,13 C 86,6 104,17 126,11 C 148,4 166,15 188,10 C 193,8 196,10 198,9" stroke-width="2.5"></path></svg></span>: <a href="resources.html" class="hl hl-circle hl-link"><span class="hl-text">fastest engine</span><svg viewBox="0 0 260 90" preserveAspectRatio="none"><path d="M128,4 C 190,1 244,20 250,45 C 256,71 196,88 130,86 C 62,84 6,68 6,44 C 6,19 58,4 128,4 Z" stroke-width="3"></path></svg></a> for building with <a href="models.html" class="hl hl-wave hl-link"><span class="hl-text">open models</span><svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,10.5 C 13,5 22,13.5 34,9.5 C 46,5.5 55,13 68,9 C 80,5 90,13.8 103,10 C 115,6.2 124,13 137,9.2 C 150,5.4 159,13.2 172,9.6 C 184,6.2 194,12.8 207,9.2 C 218,6.1 227,12 239,8.8 C 247,6.6 252,9.6 257,7.8" stroke-width="2.6"></path></svg></a> on your local computer.</h1>
       <a href="download.html" class="cta-button">Download Now</a>
       <p class="cta-subtitle">Free to use</p>
     </div>
@@ -328,8 +415,8 @@
 
   <div class="scroll-spacer">
     <div class="next-content">
-      <h1 class="next-headline">Speed and power...</h1>
-      <p class="next-subtitle">benchmark info</p>
+      <h1 class="next-headline">Speed and power</h1>
+      <p class="next-subtitle"><span class="hl hl-wave">Unmatched latency and throughput<svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,11 C 12,5 21,14 32,10 C 44,5.5 53,13.5 65,9.5 C 77,5 86,14 99,10 C 111,6 120,13 133,9 C 146,5 155,13.5 168,10 C 180,6.5 189,13 202,9.5 C 214,6 223,12.5 236,9 C 245,6.8 250,10 257,8.2" stroke-width="2.6"></path></svg></span> at your fingertips. From simple chats to targeted agents, <strong>Étude</strong> is powered by <a href="https://liszt.ai/" class="pie-link" target="_blank" rel="noopener">Pie</a> and brought right to your desktop.</p>
     </div>
     <div class="media-collage" id="stage2Media">
       <div class="media-card" style="width:190px; height:240px; left:0; top:60px; transform:rotate(-6deg); background:linear-gradient(160deg, #4258d6, #2c8dc4);"></div>
@@ -345,203 +432,57 @@
       <div class="media-card" style="width:160px; height:200px; left:200px; top:10px; transform:rotate(3deg); background:linear-gradient(160deg, #1a5f85, #2c8dc4);"></div>
     </div>
     <div class="stage3-content">
-      <h1 class="stage3-headline">...all natively local to you</h1>
-      <p class="stage3-subtitle">&rarr; Privacy Policy</p>
+      <h1 class="stage3-headline">All natively local to you</h1>
+      <p class="stage3-subtitle">Explore the <a href="models.html">open-weight models</a> offered and be secure that <a href="resources.html">your data stays yours</a>.</p>
     </div>
   </div>
   <div class="end-spacer"></div>
 
   <script>
     (function() {
-      if (window.history && 'scrollRestoration' in window.history) {
-        window.history.scrollRestoration = 'manual';
-      }
-      window.scrollTo(0, 0);
+      // Each section blurs into focus the first time it enters the view,
+      // then stays permanently clear — no scroll-linked blur, damping, or snapping.
+      var targets = [
+        document.querySelector('.next-content'),
+        document.getElementById('stage2Media'),
+        document.querySelector('.stage3-content'),
+        document.getElementById('stage3Media')
+      ].filter(Boolean);
 
-      var hero = document.querySelector('.hero-content');
-      var stage2 = document.querySelector('.next-content');
-      var stage2Media = document.getElementById('stage2Media');
-      var stage3 = document.querySelector('.stage3-content');
-      var stage3Media = document.getElementById('stage3Media');
-      var FADE_RANGE = 230; // px of scroll over which a section fades in/out
-      // The hero fades out over a longer distance so it overlaps more with
-      // "Speed and power..." fading in, softening that first handoff without
-      // fully blending the two sections together. Scaled to viewport height so
-      // the overlap stays consistent on taller screens (where sections sit
-      // further apart).
-      function heroFadeRange() {
-        return window.innerHeight * 0.5;
-      }
-      var ticking = false;
-
-      // The hero's entrance animation uses fill-mode "both", which holds its
-      // final keyframe value and overrides inline styles set by JS forever
-      // (CSS animations win the cascade over normal inline styles). Once the
-      // entrance animation finishes, drop it so scroll-driven opacity works.
-      if (hero) {
-        hero.addEventListener('animationend', function() {
-          hero.style.animation = 'none';
-        });
-      }
-
-      var PLATEAU = 105; // px around the anchor where content stays fully solid (no blur)
-
-      function sectionProgress(el, anchorFraction, fadeOutOnly, fadeRange) {
-        var rect = el.getBoundingClientRect();
-        var center = rect.top + rect.height / 2;
-        var viewportAnchor = window.innerHeight * (anchorFraction === undefined ? 0.5 : anchorFraction);
-        var range = fadeRange || FADE_RANGE;
-        // fadeOutOnly: element is fully clear until it has scrolled UP past its
-        // anchor, so it never starts blurred on page load (used for the hero).
-        if (fadeOutOnly && center >= viewportAnchor) return 1;
-        var offset = Math.abs(center - viewportAnchor);
-        if (offset <= PLATEAU) return 1;
-        return Math.max(0, 1 - (offset - PLATEAU) / range);
-      }
-
-      // Apply a soft "materialize" treatment (fade + gentle scale-up + lift +
-      // unblur) instead of a flat opacity snap, so content dissolves into
-      // place the way it does on the Apple reference. Text and its paired
-      // image collage are passed the exact same progress value so they move
-      // as a single unit rather than fading independently.
-      function materialize(el, progress) {
-        if (!el) return;
-        var p = Math.max(0, Math.min(1, progress));
-        el.style.opacity = String(p);
-        var scale = 0.94 + 0.06 * p;
-        var lift = (1 - p) * 16;
-        el.style.transform = 'translateY(' + lift + 'px) scale(' + scale + ')';
-        el.style.filter = 'blur(' + (8 * (1 - p)) + 'px)';
-      }
-
-      function applyFade() {
-        if (hero) materialize(hero, sectionProgress(hero, 0.38, true, heroFadeRange()));
-
-        var stage2Progress = stage2 ? sectionProgress(stage2, 0.5) : 0;
-        materialize(stage2, stage2Progress);
-        materialize(stage2Media, stage2Progress);
-
-        var stage3Progress = stage3 ? sectionProgress(stage3, 0.5) : 0;
-        materialize(stage3, stage3Progress);
-        materialize(stage3Media, stage3Progress);
-
-        ticking = false;
-      }
-
-      window.addEventListener('scroll', function() {
-        if (!ticking) {
-          window.requestAnimationFrame(applyFade);
-          ticking = true;
-        }
-      }, { passive: true });
-      window.addEventListener('resize', applyFade);
-
-      applyFade();
-
-      // --- Scroll resistance -------------------------------------------------
-      // Make it easier to land on the "sweet spot" where a section is fully
-      // sharp: scrolling is damped while content is clear, and runs at normal
-      // speed while it's blurred between sections.
       var reduceMotion = window.matchMedia &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      if (!reduceMotion) {
-        var MIN_SPEED = 0.32; // multiplier when content is fully sharp
-        var MAX_SPEED = 1;    // multiplier when fully blurred
-
-        function currentClarity() {
-          var vals = [];
-          if (hero)   vals.push(sectionProgress(hero, 0.38, true, heroFadeRange()));
-          if (stage2) vals.push(sectionProgress(stage2, 0.5));
-          if (stage3) vals.push(sectionProgress(stage3, 0.5));
-          return vals.length ? Math.max.apply(null, vals) : 0;
-        }
-
-        var snapTimer = null;
-        var snapAnim = null;
-
-        // Ideal scroll position for each section — where it sits perfectly in
-        // its "sweet spot". The hero's ideal spot is simply the top of the page.
-        function snapTargets() {
-          var targets = [0];
-          var docMax = document.documentElement.scrollHeight - window.innerHeight;
-          [[stage2, 0.5], [stage3, 0.5]].forEach(function(pair) {
-            var el = pair[0];
-            if (!el) return;
-            var rect = el.getBoundingClientRect();
-            var centerDoc = rect.top + window.scrollY + rect.height / 2;
-            var target = centerDoc - window.innerHeight * pair[1];
-            targets.push(Math.max(0, Math.min(docMax, target)));
-          });
-          return targets;
-        }
-
-        function cancelSnap() {
-          if (snapAnim) {
-            cancelAnimationFrame(snapAnim);
-            snapAnim = null;
-          }
-        }
-
-        function animateTo(target) {
-          var start = window.scrollY;
-          var dist = target - start;
-          if (Math.abs(dist) < 2) return;
-          var duration = 380;
-          var t0 = null;
-          cancelSnap();
-          function step(ts) {
-            if (t0 === null) t0 = ts;
-            var p = Math.min(1, (ts - t0) / duration);
-            // easeOutCubic — decisive at first, settling gently into place
-            var eased = 1 - Math.pow(1 - p, 3);
-            window.scrollTo(0, start + dist * eased);
-            if (p < 1) {
-              snapAnim = requestAnimationFrame(step);
-            } else {
-              snapAnim = null;
-            }
-          }
-          snapAnim = requestAnimationFrame(step);
-        }
-
-        function scheduleSnap() {
-          clearTimeout(snapTimer);
-          snapTimer = setTimeout(function() {
-            var y = window.scrollY;
-            var targets = snapTargets();
-            var best = null, bestDist = Infinity;
-            targets.forEach(function(t) {
-              var d = Math.abs(t - y);
-              if (d < bestDist) { bestDist = d; best = t; }
-            });
-            // Only pull into place if we're already reasonably close, so it
-            // never yanks the page while someone is scrolling somewhere else.
-            if (best !== null && bestDist < window.innerHeight * 0.45) {
-              animateTo(best);
-            }
-          }, 120);
-        }
-
-        window.addEventListener('wheel', function(e) {
-          if (e.ctrlKey) return; // let pinch-zoom through untouched
-          cancelSnap();
-          var clarity = currentClarity();
-          var speed = MAX_SPEED - (MAX_SPEED - MIN_SPEED) * clarity;
-          // Only intervene when there's meaningful damping to apply, so normal
-          // scrolling stays completely native everywhere else.
-          if (speed <= 0.95) {
-            e.preventDefault();
-            window.scrollBy(0, e.deltaY * speed);
-          }
-          scheduleSnap();
-        }, { passive: false });
-
-        // Don't fight the user if they grab the scrollbar or use the keyboard.
-        ['mousedown', 'touchstart', 'keydown'].forEach(function(evt) {
-          window.addEventListener(evt, cancelSnap, { passive: true });
-        });
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        targets.forEach(function(el) { el.classList.add('is-visible'); });
+        return;
       }
+
+      targets.forEach(function(el) { el.classList.add('reveal'); });
+
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);   // once revealed, leave it alone
+          }
+        });
+      }, { threshold: 0.25 });
+
+      targets.forEach(function(el) { io.observe(el); });
+    })();
+  </script>
+
+  <script>
+    (function() {
+      var word = document.getElementById('etudeWord');
+      if (!word) return;
+      function grow() {
+        word.classList.add('grown');
+        word.removeEventListener('mouseenter', grow);
+        word.removeEventListener('touchstart', grow);
+      }
+      word.addEventListener('mouseenter', grow);
+      word.addEventListener('touchstart', grow, { passive: true });
     })();
   </script>
 </body>
