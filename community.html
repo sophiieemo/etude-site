@@ -56,6 +56,71 @@
     gap: 35px;
     position: relative;
   }
+  .nav-dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 7px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    opacity: 0.85;
+    transition: transform 0.2s ease;
+  }
+  .nav-dropdown:hover .nav-caret,
+  .nav-dropdown:focus-within .nav-caret {
+    transform: rotate(180deg);
+  }
+  .nav-menu {
+    position: absolute;
+    top: 100%;
+    left: -14px;
+    min-width: 170px;
+    padding: 8px;
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(20, 50, 120, 0.22);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    z-index: 60;
+  }
+  /* bridges the gap so the menu doesn't close while moving the cursor to it */
+  .nav-dropdown::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 14px;
+  }
+  .nav-dropdown:hover .nav-menu,
+  .nav-dropdown:focus-within .nav-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-menu a {
+    display: block;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #1a2b4a;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-menu a:hover {
+    background: #eef3fb;
+  }
   .nav-indicator {
     position: absolute;
     bottom: 0;
@@ -124,7 +189,7 @@
   .community-block {
     position: relative;
     z-index: 2;
-    padding: 190px 60px 0;
+    padding: 260px 60px 0;
     max-width: 1120px;
   }
   .community-heading {
@@ -134,7 +199,7 @@
     line-height: 1.18;
     letter-spacing: -0.015em;
     color: #ffffff;
-    margin: 0 0 44px;
+    margin: 0 0 72px;
   }
   .community-heading .word {
     display: inline-block;
@@ -240,7 +305,7 @@
     <div class="nav-group-left">
       <div class="logo-spot"><a href="index.html" class="logo-link"><span class="logo-text">Étude</span></a></div>
       <div class="nav-left">
-      <a href="resources.html" class="nav-link ">Resources</a>
+      <span class="nav-dropdown"><a href="resources.html" class="nav-link ">Resources<span class="nav-caret"></span></a><div class="nav-menu"><a href="resources.html">Docs</a><a href="#">Blog</a></div></span>
       <a href="models.html" class="nav-link ">Models</a>
       <a href="community.html" class="nav-link active">Community</a>
       </div>
@@ -286,8 +351,13 @@
           indicator.style.width = '0';
           return;
         }
-        indicator.style.left = el.offsetLeft + 'px';
-        indicator.style.width = el.offsetWidth + 'px';
+        // Measured against .nav-left rather than offsetLeft, since the
+        // Resources dropdown wrapper is itself positioned and would
+        // otherwise become the offset parent.
+        var navRect = navLeft.getBoundingClientRect();
+        var rect = el.getBoundingClientRect();
+        indicator.style.left = (rect.left - navRect.left) + 'px';
+        indicator.style.width = rect.width + 'px';
       }
 
       var activeLink = navLeft.querySelector('.nav-link.active');
@@ -404,8 +474,12 @@
               ctx.beginPath();
               ctx.moveTo(mouse.x, mouse.y);
               ctx.lineTo(d.x, d.y);
-              ctx.strokeStyle = 'rgba(255,255,255,' + (t * 0.55 * damp).toFixed(3) + ')';
-              ctx.lineWidth = (1.1 + t * 1.5) * (0.45 + damp * 0.55);
+              // fade the lines off faster with distance and drop their peak
+              // opacity so the web reads as a soft haze rather than hard rays
+              var fade = t * 1.45;
+              if (fade > 1) fade = 1;
+              ctx.strokeStyle = 'rgba(255,255,255,' + (fade * 0.38 * damp).toFixed(3) + ')';
+              ctx.lineWidth = (0.9 + t * 1.1) * (0.45 + damp * 0.55);
               ctx.stroke();
             }
           }
