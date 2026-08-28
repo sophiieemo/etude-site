@@ -17,14 +17,25 @@
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
   .topbar {
-    height: 70px;
-    width: 100%;
+    /* floating dock rather than a full-width strip */
+    position: sticky;
+    top: 14px;
+    z-index: 200;
+    height: 66px;
+    width: calc(100% - 40px);
+    max-width: 1240px;
+    margin: 14px auto 0;
+    border-radius: 999px;
     background: linear-gradient(to right, rgba(44, 141, 196, 0.78), rgba(66, 88, 214, 0.78));
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 28px rgba(20, 50, 130, 0.18),
+                inset 0 1px 8px rgba(255, 255, 255, 0.22);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 26px;
   }
   .nav-group-left {
     display: flex;
@@ -44,7 +55,7 @@
   }
   .logo-text {
     font-family: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 600;
     letter-spacing: -0.01em;
     color: #ffffff;
@@ -72,7 +83,8 @@
     transition: transform 0.2s ease;
   }
   .nav-dropdown:hover .nav-caret,
-  .nav-dropdown:focus-within .nav-caret {
+  .nav-dropdown:focus-within .nav-caret,
+  .nav-dropdown.is-open .nav-caret {
     transform: rotate(180deg);
   }
   .nav-menu {
@@ -80,28 +92,27 @@
     top: 100%;
     left: -14px;
     min-width: 170px;
-    padding: 8px;
-    margin-top: 10px;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 12px;
-    box-shadow: 0 12px 30px rgba(20, 50, 120, 0.22);
+    /* top padding replaces the old margin, so the menu box touches the
+       trigger and there's no dead zone to cross */
+    padding: 12px 8px 8px;
+    margin-top: 0;
+    /* white liquid glass, matching the dock it hangs from */
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(20, 50, 130, 0.20),
+                inset 0 1px 10px rgba(255, 255, 255, 0.30);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);
     transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
     z-index: 60;
   }
-  /* bridges the gap so the menu doesn't close while moving the cursor to it */
-  .nav-dropdown::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 14px;
-  }
   .nav-dropdown:hover .nav-menu,
-  .nav-dropdown:focus-within .nav-menu {
+  .nav-dropdown:focus-within .nav-menu,
+  .nav-dropdown.is-open .nav-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -112,13 +123,14 @@
     border-radius: 8px;
     font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 16px;
-    font-weight: 400;
-    color: #1a2b4a;
+    font-weight: 500;
+    color: #1a1a1a;
     text-decoration: none;
     white-space: nowrap;
+    transition: background 0.2s ease;
   }
   .nav-menu a:hover {
-    background: #eef3fb;
+    background: rgba(255, 255, 255, 0.45);
   }
   .nav-indicator {
     position: absolute;
@@ -132,7 +144,7 @@
     transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .nav-link {
-    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;    font-size: 17px;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;    font-size: 21px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
@@ -149,25 +161,67 @@
     display: flex;
     align-items: center;
   }
+  /* same liquid-glass treatment as the hero CTA, scaled down */
   .download-link {
-    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;    font-size: 15px;
-    font-weight: 600;
-    color: #2c8dc4;
-    background: #ffffff;
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 8px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-block;
-    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.16s ease, box-shadow 0.16s ease;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 6px 18px rgba(20, 50, 130, 0.18),
+                inset 0 1px 6px rgba(255, 255, 255, 0.14);
+    text-shadow: 0 1px 6px rgba(20, 50, 130, 0.35);
+    transition: transform 0.5s cubic-bezier(0.34, 1.7, 0.5, 1),
+                background 0.35s ease,
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+  }
+  .download-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset -8px -6px 0 -10px rgba(255, 255, 255, 0.55),
+                inset 0 -7px 0 -7px rgba(255, 255, 255, 0.45);
+    opacity: 0.35;
+    filter: blur(1px);
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 0.35s ease;
   }
   .download-link:hover {
-    background: #eaf4fa;
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.04);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.38);
+    box-shadow: 0 10px 24px rgba(20, 50, 130, 0.24),
+                inset 0 1px 10px rgba(255, 255, 255, 0.22);
   }
-  /* small lift on press, for a bit of flare */
+  .download-link:hover::before {
+    opacity: 0.6;
+  }
+  /* press squishes the glass, then it springs back */
   .download-link:active {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(20, 60, 140, 0.22);
+    transform: translateY(0) scale(0.95);
+    transition: transform 0.11s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .download-link {
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .download-link:hover,
+    .download-link:active {
+      transform: none;
+    }
   }
 
   .models-page {
@@ -194,35 +248,59 @@
     gap: 10px;
     padding: 6px 0 14px;
     margin-bottom: 40px;
-    position: sticky;
-    top: 0;
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    z-index: 20;
   }
+  /* liquid-glass filter tabs — the pane is a translucent brand blue (the page
+     is white, so white-on-white glass wouldn't read), with the usual white
+     rim and inner glow catching the light. */
   .filter-tab {
     font-family: inherit;
     font-size: 15px;
     font-weight: 400;
     color: #777777;
     background: none;
-    border: none;
+    border: 1px solid transparent;
     padding: 9px 20px;
     border-radius: 999px;
     cursor: pointer;
-    transition: background 0.18s ease, color 0.18s ease;
+    transition: background 0.25s ease,
+                color 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                transform 0.4s cubic-bezier(0.34, 1.7, 0.5, 1);
   }
   .filter-tab:hover {
-    color: #1a1a1a;
-    background: rgba(44, 141, 196, 0.10);
+    color: #1a2b4a;
+    background: rgba(44, 141, 196, 0.14);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 3px 12px rgba(90, 120, 190, 0.10),
+                inset 0 3px 14px rgba(255, 255, 255, 0.55);
   }
   .filter-tab.active {
     color: #ffffff;
-    background: #2c8dc4;
+    background: rgba(44, 141, 196, 0.62);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 3px 12px rgba(90, 120, 190, 0.14),
+                inset 0 4px 18px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 4px rgba(20, 50, 130, 0.28);
   }
   .filter-tab.active:hover {
-    background: #2c8dc4;
+    background: rgba(44, 141, 196, 0.70);
+    color: #ffffff;
+    box-shadow: 0 5px 16px rgba(90, 120, 190, 0.18),
+                inset 0 4px 20px rgba(255, 255, 255, 0.5);
+  }
+  .filter-tab:active {
+    transform: scale(0.96);
+    transition: transform 0.11s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .filter-tab:active {
+      transform: none;
+    }
   }
   .models-grid {
     display: flex;
@@ -336,33 +414,81 @@
   .model-card-actions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-top: auto;
     padding-top: 20px;
   }
+  /* glass card actions — same blue-tinted pane as the filter tabs, since the
+     cards sit on white. "Learn more" is the quieter, near-clear variant. */
   .btn-learn {
     font-family: "Cabinet Grotesk", "Inter", "Helvetica Neue", Arial, sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     color: #2c8dc4;
     text-decoration: none;
+    white-space: nowrap;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(44, 141, 196, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 1px 2px rgba(60, 100, 165, 0.16),
+                0 4px 12px rgba(60, 100, 165, 0.10),
+                inset 0 2px 10px rgba(255, 255, 255, 0.65);
+    transition: background 0.25s ease,
+                color 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                transform 0.4s cubic-bezier(0.34, 1.7, 0.5, 1);
   }
   .btn-learn:hover {
-    text-decoration: underline;
+    color: #1a2b4a;
+    background: rgba(44, 141, 196, 0.20);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 1px 3px rgba(60, 100, 165, 0.20),
+                0 6px 16px rgba(60, 100, 165, 0.13),
+                inset 0 3px 14px rgba(255, 255, 255, 0.6);
   }
   .btn-download {
     font-family: "Cabinet Grotesk", "Inter", "Helvetica Neue", Arial, sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     color: #ffffff;
-    background: #2c8dc4;
     text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 20px;
+    white-space: nowrap;
+    padding: 7px 13px;
+    border-radius: 999px;
+    background: rgba(44, 141, 196, 0.62);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 3px 12px rgba(90, 120, 190, 0.14),
+                inset 0 4px 18px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 4px rgba(20, 50, 130, 0.28);
+    transition: background 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                transform 0.4s cubic-bezier(0.34, 1.7, 0.5, 1);
   }
   .btn-download:hover {
-    background: #256f9e;
+    background: rgba(44, 141, 196, 0.72);
+    box-shadow: 0 5px 16px rgba(90, 120, 190, 0.18),
+                inset 0 4px 20px rgba(255, 255, 255, 0.5);
   }
+  .btn-learn:active,
+  .btn-download:active {
+    transform: scale(0.96);
+    transition: transform 0.11s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-learn:active,
+    .btn-download:active {
+      transform: none;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -655,6 +781,28 @@
         });
         updateArrows();
       }
+    })();
+  </script>
+
+
+
+
+  <script>
+    (function() {
+      var dd = document.querySelector('.nav-dropdown');
+      if (!dd) return;
+      var timer;
+      function open() { clearTimeout(timer); dd.classList.add('is-open'); }
+      function close() {
+        clearTimeout(timer);
+        // brief grace period so moving the cursor toward the menu
+        // (or across any gap) doesn't dismiss it
+        timer = setTimeout(function() { dd.classList.remove('is-open'); }, 260);
+      }
+      dd.addEventListener('mouseenter', open);
+      dd.addEventListener('mouseleave', close);
+      dd.addEventListener('focusin', open);
+      dd.addEventListener('focusout', close);
     })();
   </script>
 </body>

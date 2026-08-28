@@ -16,6 +16,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
   }
   .topbar {
+    /* full-width bar on this page — the docs layout needs the fixed edges */
     height: 70px;
     width: 100%;
     background: linear-gradient(to right, rgba(44, 141, 196, 0.78), rgba(66, 88, 214, 0.78));
@@ -43,7 +44,7 @@
   }
   .logo-text {
     font-family: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 600;
     letter-spacing: -0.01em;
     color: #ffffff;
@@ -71,7 +72,8 @@
     transition: transform 0.2s ease;
   }
   .nav-dropdown:hover .nav-caret,
-  .nav-dropdown:focus-within .nav-caret {
+  .nav-dropdown:focus-within .nav-caret,
+  .nav-dropdown.is-open .nav-caret {
     transform: rotate(180deg);
   }
   .nav-menu {
@@ -79,28 +81,27 @@
     top: 100%;
     left: -14px;
     min-width: 170px;
-    padding: 8px;
-    margin-top: 10px;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 12px;
-    box-shadow: 0 12px 30px rgba(20, 50, 120, 0.22);
+    /* top padding replaces the old margin, so the menu box touches the
+       trigger and there's no dead zone to cross */
+    padding: 12px 8px 8px;
+    margin-top: 0;
+    /* white liquid glass, matching the dock it hangs from */
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(20, 50, 130, 0.20),
+                inset 0 1px 10px rgba(255, 255, 255, 0.30);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);
     transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
     z-index: 60;
   }
-  /* bridges the gap so the menu doesn't close while moving the cursor to it */
-  .nav-dropdown::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 14px;
-  }
   .nav-dropdown:hover .nav-menu,
-  .nav-dropdown:focus-within .nav-menu {
+  .nav-dropdown:focus-within .nav-menu,
+  .nav-dropdown.is-open .nav-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -111,13 +112,14 @@
     border-radius: 8px;
     font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 16px;
-    font-weight: 400;
-    color: #1a2b4a;
+    font-weight: 500;
+    color: #1a1a1a;
     text-decoration: none;
     white-space: nowrap;
+    transition: background 0.2s ease;
   }
   .nav-menu a:hover {
-    background: #eef3fb;
+    background: rgba(255, 255, 255, 0.45);
   }
   .nav-indicator {
     position: absolute;
@@ -132,7 +134,7 @@
   }
   .nav-link {
     font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 17px;
+    font-size: 21px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
@@ -149,26 +151,67 @@
     display: flex;
     align-items: center;
   }
+  /* same liquid-glass treatment as the hero CTA, scaled down */
   .download-link {
-    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: #2c8dc4;
-    background: #ffffff;
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 8px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-block;
-    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.16s ease, box-shadow 0.16s ease;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 6px 18px rgba(20, 50, 130, 0.18),
+                inset 0 1px 6px rgba(255, 255, 255, 0.14);
+    text-shadow: 0 1px 6px rgba(20, 50, 130, 0.35);
+    transition: transform 0.5s cubic-bezier(0.34, 1.7, 0.5, 1),
+                background 0.35s ease,
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+  }
+  .download-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset -8px -6px 0 -10px rgba(255, 255, 255, 0.55),
+                inset 0 -7px 0 -7px rgba(255, 255, 255, 0.45);
+    opacity: 0.35;
+    filter: blur(1px);
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 0.35s ease;
   }
   .download-link:hover {
-    background: #eaf4fa;
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.04);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.38);
+    box-shadow: 0 10px 24px rgba(20, 50, 130, 0.24),
+                inset 0 1px 10px rgba(255, 255, 255, 0.22);
   }
-  /* small lift on press, for a bit of flare */
+  .download-link:hover::before {
+    opacity: 0.6;
+  }
+  /* press squishes the glass, then it springs back */
   .download-link:active {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(20, 60, 140, 0.22);
+    transform: translateY(0) scale(0.95);
+    transition: transform 0.11s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .download-link {
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .download-link:hover,
+    .download-link:active {
+      transform: none;
+    }
   }
 
   .page-body {
@@ -179,7 +222,10 @@
   .sidebar {
     width: 260px;
     flex-shrink: 0;
-    border-right: 1px solid #ececec;
+    /* flat, very light tint of the brand blue — gives the glass something to
+       sit against without competing with the content area */
+    background: #EDF2FD;
+    border-right: 1px solid #dfe7f7;
     padding: 28px 0;
     overflow-y: auto;
   }
@@ -194,26 +240,46 @@
     transform: translateY(-50%);
     width: 15px;
     height: 15px;
-    color: #bcbcbc;
+    color: #9fb3d6;
     pointer-events: none;
   }
+  /* liquid-glass search field, using the reference .glass recipe */
   .sidebar-search input {
+    position: relative;
     width: 100%;
     font-family: inherit;
     font-size: 14px;
-    color: #1a1a1a;
-    padding: 9px 12px 9px 34px;
-    border: 1px solid #ededed;
-    border-radius: 8px;
+    color: #1a2b4a;
+    padding: 10px 12px 10px 34px;
     outline: none;
-    background: #fcfcfc;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 2rem;
+    box-shadow: 0 3px 12px rgba(90, 120, 190, 0.10),
+                inset 0 4px 20px rgba(255, 255, 255, 0.55);
+    transition: background 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                transform 0.45s cubic-bezier(0.34, 1.7, 0.5, 1);
+  }
+  .sidebar-search input:hover {
+    background: rgba(255, 255, 255, 0.25);
   }
   .sidebar-search input:focus {
-    border-color: #2161e6;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+    box-shadow: 0 5px 16px rgba(90, 120, 190, 0.14),
+                inset 0 4px 24px rgba(255, 255, 255, 0.7);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sidebar-search input:focus {
+      transform: none;
+    }
   }
   .sidebar-search input::placeholder {
-    color: #bcbcbc;
+    color: #9fb3d6;
   }
   .sidebar-no-results {
     display: none;
@@ -228,26 +294,66 @@
     font-size: 15px;
     font-weight: 700;
     color: #1a1a1a;
-    padding: 8px 28px;
+    padding: 0;
   }
+  /* Section headings and subsection links both pick up a glass pane on
+     hover — same recipe as the search field, just lighter. */
   .sidebar-section-link {
+    display: block;
+    width: 172px;
+    margin: 0 0 0 16px;
+    padding: 8px 12px;
     color: inherit;
     text-decoration: none;
+    border-radius: 2rem;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: background 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                transform 0.4s cubic-bezier(0.34, 1.7, 0.5, 1);
   }
   .sidebar-section-link:hover {
-    text-decoration: underline;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 3px 12px rgba(90, 120, 190, 0.10),
+                inset 0 3px 14px rgba(255, 255, 255, 0.6);
+    transform: translateX(2px);
   }
   .sidebar-subitem {
     display: block;
-    width: 190px;
-    padding: 7px 28px 7px 44px;
+    width: 172px;
+    margin-left: 16px;
+    padding: 7px 12px 7px 28px;
     font-size: 14px;
     color: #666666;
     text-decoration: none;
+    border-radius: 2rem;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: background 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                color 0.25s ease,
+                transform 0.4s cubic-bezier(0.34, 1.7, 0.5, 1);
   }
   .sidebar-subitem:hover {
-    background: #f4f6f8;
-    color: #1a1a1a;
+    color: #1a2b4a;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 3px 12px rgba(90, 120, 190, 0.10),
+                inset 0 3px 14px rgba(255, 255, 255, 0.6);
+    transform: translateX(2px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sidebar-section-link:hover,
+    .sidebar-subitem:hover {
+      transform: none;
+    }
   }
   .content-area {
     flex: 1;
@@ -285,9 +391,10 @@
     margin: 0 0 4px;
   }
   .sidebar-subitem.active {
-    color: #1a1a1a;
+    color: #1a2b4a;
     font-weight: 600;
-    background: #f4f6f8;
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.9);
   }
 
   .dot-scroller {
@@ -320,23 +427,62 @@
     background: #ff7a33;
     transform: scale(1.6);
   }
+  /* liquid-glass scroll thumb, same recipe as the search field */
   .scroll-glow {
     position: absolute;
     left: -4px;
     width: calc(100% + 8px);
     height: 56px;
-    border-radius: 10px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 0 16px 4px rgba(255, 122, 51, 0.18), 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(2px) saturate(180%);
+    -webkit-backdrop-filter: blur(2px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 3px 12px rgba(90, 120, 190, 0.10),
+                inset 0 4px 20px rgba(255, 255, 255, 0.55);
     pointer-events: auto;
     cursor: grab;
     touch-action: none;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .scroll-glow:hover {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 5px 16px rgba(90, 120, 190, 0.14),
+                inset 0 4px 24px rgba(255, 255, 255, 0.7);
   }
   .scroll-glow:active {
     cursor: grabbing;
+    transform: scale(0.97);
+    background: rgba(255, 255, 255, 0.3);
   }
+  /* the glass squashes against the end of the track, then springs back */
+  @keyframes glowBumpTop {
+    0%   { transform: scaleY(1) translateY(0); }
+    35%  { transform: scaleY(0.93) translateY(-1.5px); }
+    65%  { transform: scaleY(1.02) translateY(0.5px); }
+    100% { transform: scaleY(1) translateY(0); }
+  }
+  @keyframes glowBumpBottom {
+    0%   { transform: scaleY(1) translateY(0); }
+    35%  { transform: scaleY(0.93) translateY(1.5px); }
+    65%  { transform: scaleY(1.02) translateY(-0.5px); }
+    100% { transform: scaleY(1) translateY(0); }
+  }
+  .scroll-glow.bump-top {
+    animation: glowBumpTop 0.42s cubic-bezier(0.34, 1.3, 0.64, 1);
+    transform-origin: 50% 0%;
+  }
+  .scroll-glow.bump-bottom {
+    animation: glowBumpBottom 0.42s cubic-bezier(0.34, 1.3, 0.64, 1);
+    transform-origin: 50% 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-glow.bump-top,
+    .scroll-glow.bump-bottom {
+      animation: none;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -539,12 +685,31 @@
       var track = document.querySelector('.dot-scroller');
       if (!content || !glow || !track) return;
 
+      var atTop = true, atBottom = false;
+
+      function bump(which) {
+        var cls = which === 'top' ? 'bump-top' : 'bump-bottom';
+        glow.classList.remove('bump-top', 'bump-bottom');
+        // force a reflow so the animation restarts even on repeat hits
+        void glow.offsetWidth;
+        glow.classList.add(cls);
+        setTimeout(function() { glow.classList.remove(cls); }, 440);
+      }
+
       function updateGlow() {
         var maxScroll = content.scrollHeight - content.clientHeight;
         var progress = maxScroll > 0 ? content.scrollTop / maxScroll : 0;
         var minTop = 12; // rests level with "Section 1", measured from the track's top
         var maxTop = track.clientHeight - glow.offsetHeight;
         glow.style.top = (minTop + progress * (maxTop - minTop)) + 'px';
+
+        // squash against the ends of the track as it arrives
+        var nowTop = progress <= 0.001;
+        var nowBottom = progress >= 0.999;
+        if (nowTop && !atTop) bump('top');
+        if (nowBottom && !atBottom) bump('bottom');
+        atTop = nowTop;
+        atBottom = nowBottom;
       }
 
       content.addEventListener('scroll', updateGlow, { passive: true });
@@ -585,6 +750,27 @@
 
       glow.addEventListener('pointerup', endDrag);
       glow.addEventListener('pointercancel', endDrag);
+    })();
+  </script>
+
+
+
+  <script>
+    (function() {
+      var dd = document.querySelector('.nav-dropdown');
+      if (!dd) return;
+      var timer;
+      function open() { clearTimeout(timer); dd.classList.add('is-open'); }
+      function close() {
+        clearTimeout(timer);
+        // brief grace period so moving the cursor toward the menu
+        // (or across any gap) doesn't dismiss it
+        timer = setTimeout(function() { dd.classList.remove('is-open'); }, 260);
+      }
+      dd.addEventListener('mouseenter', open);
+      dd.addEventListener('mouseleave', close);
+      dd.addEventListener('focusin', open);
+      dd.addEventListener('focusout', close);
     })();
   </script>
 </body>

@@ -10,20 +10,35 @@
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
+  html { height: 100%; }
   body {
-    background: linear-gradient(to right, rgba(33, 97, 230, 0.85), rgba(107, 158, 255, 0.85)), #ffffff;
+    min-height: 100%;
+    /* fixed so the gradient spans the viewport at any scroll position
+       instead of ending after the first screen */
+    background: linear-gradient(to top right, rgba(33, 97, 230, 0.85), rgba(107, 158, 255, 0.85)), #ffffff;
+    background-attachment: fixed;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
   }
   .topbar {
-    height: 70px;
-    width: 100%;
+    /* floating dock rather than a full-width strip */
+    position: sticky;
+    top: 14px;
+    z-index: 200;
+    height: 66px;
+    width: calc(100% - 40px);
+    max-width: 1240px;
+    margin: 14px auto 0;
+    border-radius: 999px;
     background: linear-gradient(to right, rgba(44, 141, 196, 0.30), rgba(66, 88, 214, 0.30));
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 28px rgba(20, 50, 130, 0.18),
+                inset 0 1px 8px rgba(255, 255, 255, 0.22);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 26px;
   }
   .nav-group-left {
     display: flex;
@@ -43,7 +58,7 @@
   }
   .logo-text {
     font-family: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 600;
     letter-spacing: -0.01em;
     color: #ffffff;
@@ -71,7 +86,8 @@
     transition: transform 0.2s ease;
   }
   .nav-dropdown:hover .nav-caret,
-  .nav-dropdown:focus-within .nav-caret {
+  .nav-dropdown:focus-within .nav-caret,
+  .nav-dropdown.is-open .nav-caret {
     transform: rotate(180deg);
   }
   .nav-menu {
@@ -79,28 +95,27 @@
     top: 100%;
     left: -14px;
     min-width: 170px;
-    padding: 8px;
-    margin-top: 10px;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 12px;
-    box-shadow: 0 12px 30px rgba(20, 50, 120, 0.22);
+    /* top padding replaces the old margin, so the menu box touches the
+       trigger and there's no dead zone to cross */
+    padding: 12px 8px 8px;
+    margin-top: 0;
+    /* white liquid glass, matching the dock it hangs from */
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(20, 50, 130, 0.20),
+                inset 0 1px 10px rgba(255, 255, 255, 0.30);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);
     transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
     z-index: 60;
   }
-  /* bridges the gap so the menu doesn't close while moving the cursor to it */
-  .nav-dropdown::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 14px;
-  }
   .nav-dropdown:hover .nav-menu,
-  .nav-dropdown:focus-within .nav-menu {
+  .nav-dropdown:focus-within .nav-menu,
+  .nav-dropdown.is-open .nav-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -111,13 +126,14 @@
     border-radius: 8px;
     font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 16px;
-    font-weight: 400;
-    color: #1a2b4a;
+    font-weight: 500;
+    color: #1a1a1a;
     text-decoration: none;
     white-space: nowrap;
+    transition: background 0.2s ease;
   }
   .nav-menu a:hover {
-    background: #eef3fb;
+    background: rgba(255, 255, 255, 0.45);
   }
   .nav-indicator {
     position: absolute;
@@ -132,7 +148,7 @@
   }
   .nav-link {
     font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 17px;
+    font-size: 21px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
@@ -149,26 +165,67 @@
     display: flex;
     align-items: center;
   }
+  /* same liquid-glass treatment as the hero CTA, scaled down */
   .download-link {
-    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: #2c8dc4;
-    background: #ffffff;
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 8px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-block;
-    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.16s ease, box-shadow 0.16s ease;
+    font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 6px 18px rgba(20, 50, 130, 0.18),
+                inset 0 1px 6px rgba(255, 255, 255, 0.14);
+    text-shadow: 0 1px 6px rgba(20, 50, 130, 0.35);
+    transition: transform 0.5s cubic-bezier(0.34, 1.7, 0.5, 1),
+                background 0.35s ease,
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+  }
+  .download-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset -8px -6px 0 -10px rgba(255, 255, 255, 0.55),
+                inset 0 -7px 0 -7px rgba(255, 255, 255, 0.45);
+    opacity: 0.35;
+    filter: blur(1px);
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 0.35s ease;
   }
   .download-link:hover {
-    background: #eaf4fa;
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.04);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.38);
+    box-shadow: 0 10px 24px rgba(20, 50, 130, 0.24),
+                inset 0 1px 10px rgba(255, 255, 255, 0.22);
   }
-  /* small lift on press, for a bit of flare */
+  .download-link:hover::before {
+    opacity: 0.6;
+  }
+  /* press squishes the glass, then it springs back */
   .download-link:active {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(20, 60, 140, 0.22);
+    transform: translateY(0) scale(0.95);
+    transition: transform 0.11s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .download-link {
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .download-link:hover,
+    .download-link:active {
+      transform: none;
+    }
   }
 
   .hero {
@@ -203,7 +260,7 @@
     font-weight: 500;
     line-height: 1.55;
     letter-spacing: -0.01em;
-    color: #fbf7ee;
+    color: #ffffff;
     text-align: center;
     margin: 0;
   }
@@ -244,12 +301,6 @@
   }
   .hl-text {
     display: inline-block;
-    transform-origin: 50% 100%;
-    transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-  .hl-wave:hover .hl-text,
-  .hl-circle:hover .hl-text {
-    transform: skewX(-6deg);
   }
   .hl path {
     stroke: #ffffff;
@@ -259,20 +310,71 @@
     opacity: 0.7;
   }
 
+  /* Liquid-glass CTA: translucent pane + blurred backdrop, an inner rim of
+     light, and a specular highlight that sweeps across on hover. */
   .cta-button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-block;
     margin-top: 44px;
     font-size: 22px;
     font-weight: 600;
-    color: #2c6fa8;
-    background: #ffffff;
+    color: #ffffff;
     text-decoration: none;
-    padding: 18px 46px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    padding: 18px 48px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 10px 28px rgba(20, 50, 130, 0.20),
+                inset 0 1px 8px rgba(255, 255, 255, 0.14);
+    text-shadow: 0 1px 6px rgba(20, 50, 130, 0.35);
+    transition: transform 0.5s cubic-bezier(0.34, 1.7, 0.5, 1),
+                background 0.35s ease,
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
   }
+
+  /* inner rim highlights — the "liquid" edge where light catches the glass */
+  .cta-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset -10px -8px 0 -12px rgba(255, 255, 255, 0.55),
+                inset 0 -9px 0 -9px rgba(255, 255, 255, 0.45);
+    opacity: 0.35;
+    filter: blur(1px);
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 0.35s ease;
+  }
+
   .cta-button:hover {
-    background: #eaf4fa;
+    transform: translateY(-3px) scale(1.04);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.38);
+    box-shadow: 0 16px 36px rgba(20, 50, 130, 0.26),
+                inset 0 1px 12px rgba(255, 255, 255, 0.22);
+  }
+  .cta-button:hover::before {
+    opacity: 0.6;
+  }
+  /* press squishes the glass, then it springs back */
+  .cta-button:active {
+    transform: translateY(0) scale(0.95);
+    transition: transform 0.11s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta-button {
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .cta-button:hover,
+    .cta-button:active {
+      transform: none;
+    }
   }
   .cta-subtitle {
     margin-top: 12px;
@@ -287,15 +389,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Centered band: the row is capped and centered so the text and image
-       sit closer to the middle instead of hugging the screen edges, while
-       staying left/right aligned within the band. */
-    max-width: 1520px;
+    /* narrower band than before, so the text and collage sit closer to the
+       middle of the page while staying side by side */
+    max-width: 1180px;
     margin: 0 auto;
     padding: 0 60px;
   }
   .next-content {
-    max-width: 660px;
+    max-width: 560px;
     text-align: left;
     opacity: 0;
     will-change: opacity, transform, filter;
@@ -339,15 +440,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Centered band: the row is capped and centered so the text and image
-       sit closer to the middle instead of hugging the screen edges, while
-       staying left/right aligned within the band. */
-    max-width: 1520px;
+    max-width: 1180px;
     margin: 0 auto;
     padding: 0 60px;
   }
   .stage3-content {
-    max-width: 660px;
+    max-width: 560px;
     text-align: right;
     opacity: 0;
     will-change: opacity, transform, filter;
@@ -386,7 +484,7 @@
     background-repeat: no-repeat;
     background-size: 220% 100%;
     background-position: -140% 0;
-    transition: background-position 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transition: background-position 1.6s cubic-bezier(0.33, 0.4, 0.35, 1),
                 text-decoration-color 0.18s ease;
   }
   .stage3-subtitle a:hover,
@@ -411,6 +509,7 @@
     transition: opacity 0.85s ease, filter 0.85s ease,
                 transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
+
 </style>
 </head>
 <body>
@@ -469,7 +568,7 @@
   </script>
   <div class="hero">
     <div class="hero-content">
-      <h1 class="headline"><span class="hl hl-underline">Étude<svg viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M2,10 C 24,3 42,15 62,7 C 84,-1 102,13 124,6 C 146,-1 164,12 186,5 C 192,3 196,6 198,5" stroke-width="3"></path><path d="M4,16 C 26,10 44,19 64,13 C 86,6 104,17 126,11 C 148,4 166,15 188,10 C 193,8 196,10 198,9" stroke-width="2.5"></path></svg></span>: <a href="resources.html" class="hl hl-circle hl-link"><span class="hl-text">fastest engine</span><svg viewBox="0 0 260 90" preserveAspectRatio="none"><path d="M128,4 C 190,1 244,20 250,45 C 256,71 196,88 130,86 C 62,84 6,68 6,44 C 6,19 58,4 128,4 Z" stroke-width="3"></path></svg></a> for building with <a href="models.html" class="hl hl-wave hl-link"><span class="hl-text">open models</span><svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,10.5 C 13,5 22,13.5 34,9.5 C 46,5.5 55,13 68,9 C 80,5 90,13.8 103,10 C 115,6.2 124,13 137,9.2 C 150,5.4 159,13.2 172,9.6 C 184,6.2 194,12.8 207,9.2 C 218,6.1 227,12 239,8.8 C 247,6.6 252,9.6 257,7.8" stroke-width="2.6"></path></svg></a> on your local computer.</h1>
+      <h1 class="headline"><span class="hl hl-underline">Étude<svg viewBox="0 0 200 24" preserveAspectRatio="none"><path d="M2,10 C 24,3 42,15 62,7 C 84,-1 102,13 124,6 C 146,-1 164,12 186,5 C 192,3 196,6 198,5" stroke-width="3"></path><path d="M4,16 C 26,10 44,19 64,13 C 86,6 104,17 126,11 C 148,4 166,15 188,10 C 193,8 196,10 198,9" stroke-width="2.5"></path></svg></span>: <a href="resources.html" class="hl hl-circle hl-link"><span class="hl-text">fastest LLM inference</span><svg viewBox="0 0 260 90" preserveAspectRatio="none"><path d="M128,4 C 190,1 244,20 250,45 C 256,71 196,88 130,86 C 62,84 6,68 6,44 C 6,19 58,4 128,4 Z" stroke-width="3"></path></svg></a> on your <span class="hl hl-wave"><span class="hl-text">Mac</span><svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,10.5 C 13,5 22,13.5 34,9.5 C 46,5.5 55,13 68,9 C 80,5 90,13.8 103,10 C 115,6.2 124,13 137,9.2 C 150,5.4 159,13.2 172,9.6 C 184,6.2 194,12.8 207,9.2 C 218,6.1 227,12 239,8.8 C 247,6.6 252,9.6 257,7.8" stroke-width="2.6"></path></svg></span></h1>
       <a href="download.html" class="cta-button">Download Now</a>
       <p class="cta-subtitle">Free to use</p>
     </div>
@@ -477,8 +576,8 @@
 
   <div class="scroll-spacer">
     <div class="next-content">
-      <h1 class="next-headline">Speed and power</h1>
-      <p class="next-subtitle"><span class="hl hl-wave">Unmatched latency and throughput<svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,11 C 12,5 21,14 32,10 C 44,5.5 53,13.5 65,9.5 C 77,5 86,14 99,10 C 111,6 120,13 133,9 C 146,5 155,13.5 168,10 C 180,6.5 189,13 202,9.5 C 214,6 223,12.5 236,9 C 245,6.8 250,10 257,8.2" stroke-width="2.6"></path></svg></span> at your fingertips. From simple chats to targeted agents, <strong>Étude</strong> is powered by <a href="https://liszt.ai/" class="pie-link" target="_blank" rel="noopener">Pie</a> and brought right to your desktop.</p>
+      <h1 class="next-headline">More work. Less time.</h1>
+      <p class="next-subtitle"><span class="hl hl-wave">Unmatched latency and throughput<svg viewBox="0 0 260 18" preserveAspectRatio="none"><path d="M3,11 C 12,5 21,14 32,10 C 44,5.5 53,13.5 65,9.5 C 77,5 86,14 99,10 C 111,6 120,13 133,9 C 146,5 155,13.5 168,10 C 180,6.5 189,13 202,9.5 C 214,6 223,12.5 236,9 C 245,6.8 250,10 257,8.2" stroke-width="2.6"></path></svg></span> at your fingertips.</p>
     </div>
     <div class="media-collage" id="stage2Media">
       <div class="media-card" style="width:190px; height:240px; left:0; top:60px; transform:rotate(-6deg); background:linear-gradient(160deg, #4258d6, #2c8dc4);"></div>
@@ -531,6 +630,27 @@
       }, { threshold: 0.25 });
 
       targets.forEach(function(el) { io.observe(el); });
+    })();
+  </script>
+
+
+
+  <script>
+    (function() {
+      var dd = document.querySelector('.nav-dropdown');
+      if (!dd) return;
+      var timer;
+      function open() { clearTimeout(timer); dd.classList.add('is-open'); }
+      function close() {
+        clearTimeout(timer);
+        // brief grace period so moving the cursor toward the menu
+        // (or across any gap) doesn't dismiss it
+        timer = setTimeout(function() { dd.classList.remove('is-open'); }, 260);
+      }
+      dd.addEventListener('mouseenter', open);
+      dd.addEventListener('mouseleave', close);
+      dd.addEventListener('focusin', open);
+      dd.addEventListener('focusout', close);
     })();
   </script>
 </body>
